@@ -1,0 +1,30 @@
+{
+  "name": "phnq-log",
+  "version": "1.0.0",
+  "description": "Really basic logging.",
+  "main": "index.server.js",
+  "browser": "index.client.js",
+  "scripts": {
+    "dist": "tsc",
+    "postdist": "ts-node scripts/postdist",
+    "clean": "rimraf dist",
+    "test": "jest",
+    "release:patch": "npm version patch; npm run dist; cd dist; npm publish",
+    "release:minor": "npm version minor; npm run dist; cd dist; npm publish"
+  },
+  "author": "Patrick Gostovic",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.18",
+    "dts-gen": "^0.5.7",
+    "prettier": "^1.15.3",
+    "rimraf": "^2.6.3",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.12.1",
+    "tslint-config-prettier": "^1.17.0",
+    "typescript": "^3.2.4"
+  }
+}
