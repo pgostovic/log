@@ -1,5 +1,5 @@
 {
-  "name": "phnq-log",
+  "name": "@phnq/log",
   "version": "1.0.0",
   "description": "Really basic logging.",
   "main": "index.server.js",
