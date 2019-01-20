@@ -1,5 +1,6 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+
 const {
   author,
   browser,
@@ -12,7 +13,9 @@ const {
   name: packageName,
   repository,
   version,
-} = require('../package.json');
+} = JSON.parse(
+  fs.readFileSync(path.resolve(__dirname, '../package.json')).toString(),
+);
 
 const distPkgJSON = {
   author,
