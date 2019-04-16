@@ -25,15 +25,24 @@ const colorize = (s: string, isBrowser: boolean) => {
   };
 };
 
+let categoryMatcher: RegExp = process.env.NODE_ENV === 'test' ? /\.^/ : /.+/;
+
+export const matchCategory = (matcher: RegExp): void => {
+  categoryMatcher = matcher;
+}
+
 export const createLogger = (category: string, isBrowser: boolean) => {
   const colorCat = colorize(category, isBrowser);
   const logFn = (...a: any[]) => {
-    const [msg, ...args] = a;
-    console.log(
-      `${getTs()} ${colorCat.text} ${msg}`,
-      ...colorCat.args,
-      ...args,
-    );
+    if (category.match(categoryMatcher)) {
+      const [msg, ...args] = a;
+      // tslint:disable-next-line: no-console
+      console.log(
+        `${getTs()} ${colorCat.text} ${msg}`,
+        ...colorCat.args,
+        ...args,
+      );
+    }
   };
   return logFn;
 };
