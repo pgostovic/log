@@ -12,24 +12,18 @@ const colorize = (s: string, isBrowser: boolean) => {
 
   if (isBrowser) {
     return {
-      args: [
-        `font-weight: bold; color: hsl(${hue}, 100%, 30%)`,
-        'font-weight: normal; color: inherit',
-      ],
+      args: [`font-weight: bold; color: hsl(${hue}, 100%, 30%)`, 'font-weight: normal; color: inherit'],
       text: `%c${s}%c`,
     };
   }
-  return {
-    args: [],
-    text: chalk.hsl(hue, 100, 30).bold(s),
-  };
+  return { args: [], text: chalk.hsl(hue, 100, 30).bold(s) };
 };
 
 let categoryMatcher: RegExp = process.env.NODE_ENV === 'test' ? /\.^/ : /.+/;
 
 export const matchCategory = (matcher: RegExp): void => {
   categoryMatcher = matcher;
-}
+};
 
 export const createLogger = (category: string, isBrowser: boolean) => {
   const colorCat = colorize(category, isBrowser);
@@ -37,11 +31,7 @@ export const createLogger = (category: string, isBrowser: boolean) => {
     if (category.match(categoryMatcher)) {
       const [msg, ...args] = a;
       // tslint:disable-next-line: no-console
-      console.log(
-        `${getTs()} ${colorCat.text} ${msg}`,
-        ...colorCat.args,
-        ...args,
-      );
+      console.log(`${getTs()} ${colorCat.text} ${msg}`, ...colorCat.args, ...args);
     }
   };
   return logFn;
