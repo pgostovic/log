@@ -1,6 +1,6 @@
 # @phnq/log
 
-![npm](https://img.shields.io/npm/v/@phnq/log.svg)
+[![npm version](https://badge.fury.io/js/%40phnq%2Flog.svg)](https://badge.fury.io/js/%40phnq%2Flog)
 
 Super basic, no frills logging for client or server.
 
