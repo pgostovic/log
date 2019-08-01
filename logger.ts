@@ -1,3 +1,4 @@
+// tslint:disable: no-console
 import chalk from 'chalk';
 
 const getTs = () => new Date().toISOString();
@@ -25,14 +26,34 @@ export const matchCategory = (matcher: RegExp): void => {
   categoryMatcher = matcher;
 };
 
+enum Method {
+  Log = 'log',
+  Group = 'group',
+  GroupCollapsed = 'groupCollapsed',
+}
+
 export const createLogger = (category: string, isBrowser: boolean) => {
   const colorCat = colorize(category, isBrowser);
-  const logFn = (...a: any[]) => {
+  const logFn = (method: Method, ...a: any[]) => {
     if (category.match(categoryMatcher)) {
       const [msg, ...args] = a;
-      // tslint:disable-next-line: no-console
-      console.log(`${getTs()} ${colorCat.text} ${msg}`, ...colorCat.args, ...args);
+      console[method](`${getTs()} ${colorCat.text} ${msg}`, ...colorCat.args, ...args);
     }
   };
-  return logFn;
+
+  const logger = (...a: any[]) => logFn(Method.Log, ...a);
+
+  logger.group = (label: string, fn: (l: (...a: any[]) => void) => void) => {
+    logFn(Method.Group, label);
+    fn(logger);
+    console.groupEnd();
+  };
+
+  logger.groupCollapsed = (label: string, fn: (l: (...a: any[]) => void) => void) => {
+    logFn(Method.GroupCollapsed, label);
+    fn(logger);
+    console.groupEnd();
+  };
+
+  return logger;
 };
