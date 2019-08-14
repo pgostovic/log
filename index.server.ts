@@ -1,3 +1,3 @@
-import { createLogger as loggerCreate } from './logger';
+import { createLogger as loggerCreate, LogFn } from './logger';
 
-export const createLogger = (category: string) => loggerCreate(category, false);
+export const createLogger = (category: string): LogFn => loggerCreate(category, false);

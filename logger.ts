@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // tslint:disable: no-console
 import chalk from 'chalk';
 
-const getTs = () => new Date().toISOString();
+const getTs = (): string => new Date().toISOString();
 
-const colorize = (s: string, isBrowser: boolean) => {
+const colorize = (s: string, isBrowser: boolean): { args: string[]; text: string } => {
   const charCodeSum = s
     .split('')
     .map((char: string) => char.charCodeAt(0))
@@ -28,20 +29,26 @@ export const matchCategory = (matcher: RegExp): void => {
 
 enum Method {
   Log = 'log',
+  Error = 'error',
+  Warn = 'warn',
   Group = 'group',
   GroupCollapsed = 'groupCollapsed',
 }
 
-export const createLogger = (category: string, isBrowser: boolean) => {
+export type LogFn = (...a: any[]) => void;
+
+export const createLogger = (category: string, isBrowser: boolean): LogFn => {
   const colorCat = colorize(category, isBrowser);
-  const logFn = (method: Method, ...a: any[]) => {
+  const logFn = (method: Method, ...a: any[]): void => {
     if (category.match(categoryMatcher)) {
       const [msg, ...args] = a;
       console[method](`${getTs()} ${colorCat.text} ${msg}`, ...colorCat.args, ...args);
     }
   };
 
-  const logger = (...a: any[]) => logFn(Method.Log, ...a);
+  const logger = (...a: any[]): void => logFn(Method.Log, ...a);
+  logger.error = (...a: any[]): void => logFn(Method.Error, ...a);
+  logger.warn = (...a: any[]): void => logFn(Method.Warn, ...a);
 
   logger.group = (label: string, fn: (l: (...a: any[]) => void) => void) => {
     logFn(Method.Group, label);
