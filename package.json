@@ -12,7 +12,7 @@
     "dist": "tsc",
     "postdist": "ts-node scripts/postdist",
     "clean": "rimraf dist",
-    "test": "jest",
+    "demo": "ts-node src/demo.ts",
     "release:patch": "npm version patch; git push; npm run dist; cd dist; npm publish",
     "release:minor": "npm version minor; git push; npm run dist; cd dist; npm publish"
   },

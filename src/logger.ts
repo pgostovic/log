@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // tslint:disable: no-console
 import chalk from 'chalk';
@@ -35,20 +36,49 @@ enum Method {
   GroupCollapsed = 'groupCollapsed',
 }
 
-export type LogFn = (...a: any[]) => void;
+interface LogFnResult {
+  stack: () => void;
+}
 
-export const createLogger = (category: string, isBrowser: boolean): LogFn => {
+type LogFn = (...a: any[]) => LogFnResult;
+
+export type Logger = LogFn & {
+  error: LogFn;
+  warn: LogFn;
+};
+
+const getPrefix = (method: Method): string => {
+  switch (method) {
+    case Method.Warn:
+      return '⚠️  ';
+    case Method.Error:
+      return '🚫 ';
+  }
+  return '';
+};
+
+export const createLogger = (category: string, isBrowser: boolean): Logger => {
   const colorCat = colorize(category, isBrowser);
-  const logFn = (method: Method, ...a: any[]): void => {
+
+  const logFn = (method: Method, ...a: any[]): LogFnResult => {
     if (category.match(categoryMatcher)) {
       const [msg, ...args] = a;
-      console[method](`${getTs()} ${colorCat.text} ${msg}`, ...colorCat.args, ...args);
+      console[method](`${getTs()} ${colorCat.text} ${getPrefix(method)}${msg}`, ...colorCat.args, ...args);
+
+      const stack = (): void => {
+        const stackTrace = { stack: undefined };
+        Error.captureStackTrace(stackTrace, stack);
+        console.log(stackTrace.stack);
+      };
+
+      return { stack };
     }
+    return { stack: (): void => {} };
   };
 
-  const logger = (...a: any[]): void => logFn(Method.Log, ...a);
-  logger.error = (...a: any[]): void => logFn(Method.Error, ...a);
-  logger.warn = (...a: any[]): void => logFn(Method.Warn, ...a);
+  const logger = (...a: any[]): LogFnResult => logFn(Method.Log, ...a);
+  logger.error = (...a: any[]): LogFnResult => logFn(Method.Error, ...a);
+  logger.warn = (...a: any[]): LogFnResult => logFn(Method.Warn, ...a);
 
   logger.group = (label: string, fn: (l: (...a: any[]) => void) => void) => {
     logFn(Method.Group, label);
