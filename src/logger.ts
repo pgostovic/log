@@ -57,6 +57,18 @@ const getPrefix = (method: Method): string => {
   return '';
 };
 
+class StackTrace {
+  public stack = '';
+
+  constructor(context: () => void) {
+    Error.captureStackTrace(this, context);
+    this.stack = this.stack
+      .split('\n')
+      .slice(1)
+      .join('\n');
+  }
+}
+
 export const createLogger = (category: string, isBrowser: boolean): Logger => {
   const colorCat = colorize(category, isBrowser);
 
@@ -66,9 +78,12 @@ export const createLogger = (category: string, isBrowser: boolean): Logger => {
       console[method](`${getTs()} ${colorCat.text} ${getPrefix(method)}${msg}`, ...colorCat.args, ...args);
 
       const stack = (): void => {
-        const stackTrace = { stack: undefined };
-        Error.captureStackTrace(stackTrace, stack);
-        console.log(stackTrace.stack);
+        const stackTrace = new StackTrace(stack);
+        if (isBrowser) {
+          console.log(`%c${stackTrace.stack}`, 'color: #999');
+        } else {
+          console.log(chalk.hsl(0, 0, 30)(stackTrace.stack));
+        }
       };
 
       return { stack };
