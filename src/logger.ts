@@ -45,6 +45,8 @@ type LogFn = (...a: any[]) => LogFnResult;
 export type Logger = LogFn & {
   error: LogFn;
   warn: LogFn;
+  group(...a: any[]): void;
+  groupCollapsed(...a: any[]): void;
 };
 
 const getPrefix = (method: Method): string => {
