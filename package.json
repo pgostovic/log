@@ -9,7 +9,6 @@
   "main": "index.server.js",
   "browser": "index.client.js",
   "scripts": {
-    "preinstall": "scripts/preinstall.sh",
     "dist": "tsc",
     "postdist": "ts-node scripts/postdist",
     "clean": "rimraf dist",
@@ -23,15 +22,15 @@
     "chalk": "^2.4.2"
   },
   "devDependencies": {
-    "@types/node": "^10.17.21",
-    "@typescript-eslint/eslint-plugin": "^2.29.0",
-    "@typescript-eslint/parser": "^2.29.0",
+    "@types/node": "^10.17.44",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-plugin-prettier": "^3.1.4",
     "prettier": "^1.19.1",
     "rimraf": "^2.7.1",
     "ts-node": "^7.0.1",
-    "typescript": "^3.8.3"
+    "typescript": "^3.9.7"
   }
 }
