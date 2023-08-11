@@ -37,7 +37,7 @@ enum Method {
 }
 
 interface LogFnResult {
-  stack: () => void;
+  stack: (err?: unknown) => void;
 }
 
 type LogFn = (...a: any[]) => LogFnResult;
@@ -62,8 +62,12 @@ const getPrefix = (method: Method): string => {
 class StackTrace {
   public stack = '';
 
-  constructor(context: () => void) {
-    Error.captureStackTrace(this, context);
+  constructor(context: Error | (() => void)) {
+    if (context instanceof Error) {
+      this.stack = context.stack || '';
+    } else {
+      Error.captureStackTrace(this, context);
+    }
     this.stack = this.stack
       .split('\n')
       .slice(1)
@@ -79,8 +83,8 @@ export const createLogger = (category: string, isBrowser: boolean): Logger => {
       const [msg, ...args] = a;
       console[method](`${getTs()} ${colorCat.text} ${getPrefix(method)}${msg}`, ...colorCat.args, ...args);
 
-      const stack = (): void => {
-        const stackTrace = new StackTrace(stack);
+      const stack = (err?: unknown): void => {
+        const stackTrace = new StackTrace(err instanceof Error ? err : stack);
         if (isBrowser) {
           console.log(`%c${stackTrace.stack}`, 'color: #999');
         } else {
@@ -90,7 +94,11 @@ export const createLogger = (category: string, isBrowser: boolean): Logger => {
 
       return { stack };
     }
-    return { stack: (): void => {} };
+    return {
+      stack: (): void => {
+        // do nothing
+      },
+    };
   };
 
   const logger = (...a: any[]): LogFnResult => logFn(Method.Log, ...a);

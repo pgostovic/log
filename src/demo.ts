@@ -16,6 +16,7 @@ const fnOne = (): void => {
   log.error('Error with stack trace').stack();
   log.warn('Warn with stack trace').stack();
   log('Normal with stack trace').stack();
+  throw new Error('New error');
 };
 
 const fnTwo = (): void => {
@@ -26,4 +27,8 @@ const fnThree = (): void => {
   fnTwo();
 };
 
-fnThree();
+try {
+  fnThree();
+} catch (err) {
+  log.error('Error with stack trace for supplied error').stack(err);
+}
