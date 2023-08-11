@@ -67,11 +67,11 @@ class StackTrace {
       this.stack = context.stack || '';
     } else {
       Error.captureStackTrace(this, context);
+      this.stack = this.stack
+        .split('\n')
+        .slice(1)
+        .join('\n');
     }
-    this.stack = this.stack
-      .split('\n')
-      .slice(1)
-      .join('\n');
   }
 }
 
@@ -81,7 +81,7 @@ export const createLogger = (category: string, isBrowser: boolean): Logger => {
   const logFn = (method: Method, ...a: any[]): LogFnResult => {
     if (category.match(categoryMatcher)) {
       const [msg, ...args] = a;
-      console[method](`${getTs()} ${colorCat.text} ${getPrefix(method)}${msg}`, ...colorCat.args, ...args);
+      console.log(`${getTs()} ${colorCat.text} ${getPrefix(method)}${msg}`, ...colorCat.args, ...args);
 
       const stack = (err?: unknown): void => {
         const stackTrace = new StackTrace(err instanceof Error ? err : stack);
