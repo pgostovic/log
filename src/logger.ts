@@ -22,7 +22,7 @@ const colorize = (s: string, isBrowser: boolean): { args: string[]; text: string
   return { args: [], text: chalk.hsl(hue, 100, 30).bold(s) };
 };
 
-let categoryMatcher: RegExp = process.env.NODE_ENV === 'test' ? /\.^/ : /.+/;
+let categoryMatcher: RegExp = typeof process !== 'undefined' && process.env.NODE_ENV === 'test' ? /\.^/ : /.+/;
 
 export const matchCategory = (matcher: RegExp): void => {
   categoryMatcher = matcher;
